@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pygame Zero Capstone Ideation Sheet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Confetti & Tone.js -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F5F4FF;
+            color: #1A1A1A;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Alphagen Yellow Spark Underline */
+        .spark-underline {
+            box-shadow: inset 0 -0.35em 0 #FFD071;
+        }
+
+        /* Quick-tap starter pills */
+        .quick-chip {
+            transition: all 0.15s ease;
+        }
+        .quick-chip:active {
+            transform: scale(0.96);
+        }
+
+        /* Custom checkbox strike-through */
+        .plan-check:checked + span {
+            text-decoration: line-through;
+            color: #888896;
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-[#EAE7FE] sticky top-0 z-30 shadow-2xs">
+        <div class="max-w-3xl mx-auto px-4 py-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-[#5E48C4] text-white flex items-center justify-center text-xl font-extrabold shadow-sm relative">
+                    <span>🎮</span>
+                    <span class="absolute -top-1 -right-1 text-xs text-[#FFD071] drop-shadow">✦</span>
+                </div>
+                <div>
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#5E48C4]">Alphagen Learning ✦</div>
+                    <h1 class="text-lg sm:text-xl font-extrabold text-[#1A1A1A] tracking-[-0.02em]">Game Idea & <span class="spark-underline">Level</span> Planner</h1>
+                </div>
+            </div>
+            <button type="button" onclick="resetForm()" class="px-3.5 py-2 rounded-xl bg-[#F2F2F4] hover:bg-[#EAE7FE] text-[#404048] text-xs font-semibold transition">
+                ↺ Reset
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+
+        <!-- =============================================================== -->
+        <!-- STEP 1: GAME IDEA                                               -->
+        <!-- =============================================================== -->
+        <section class="bg-white rounded-2xl border-2 border-[#EAE7FE] p-5 sm:p-6 shadow-2xs space-y-4">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-xl bg-[#5E48C4] text-white font-bold text-sm flex items-center justify-center">1</span>
+                <h2 class="text-base sm:text-lg font-bold text-[#1A1A1A] tracking-[-0.01em]">Game Idea</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E48C4] mb-1">Game Name</label>
+                    <input id="game-title" type="text" placeholder="e.g., Space Dodger" class="w-full px-3.5 py-2.5 rounded-xl border border-[#EAE7FE] bg-[#F5F4FF]/40 text-sm font-medium text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E48C4] mb-1">Screen Size</label>
+                    <select id="screen-size" onchange="toggleOtherInput('screen-size', 'screen-size-other')" class="w-full px-3.5 py-2.5 rounded-xl border border-[#EAE7FE] bg-white text-sm font-medium text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                        <option value="800 x 600">800 x 600</option>
+                        <option value="600 x 600">600 x 600</option>
+                        <option value="1000 x 600">1000 x 600</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input id="screen-size-other" type="text" placeholder="Type width x height..." class="hidden mt-2 w-full px-3 py-2 rounded-xl border border-[#7B6ED4] bg-[#F5F4FF] text-xs font-medium focus:outline-none focus:border-[#5E48C4]">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E48C4] mb-1.5">What is the main goal?</label>
+                <div class="flex flex-wrap gap-1.5 mb-2">
+                    <button type="button" onclick="setText('game-idea', 'Catch good items and dodge hazards.')" class="quick-chip px-3 py-1 rounded-lg bg-[#F5F4FF] hover:bg-[#EAE7FE] text-[#5E48C4] text-xs font-semibold border border-[#EAE7FE]">Catch & Dodge</button>
+                    <button type="button" onclick="setText('game-idea', 'Reach the finish line without getting hit.')" class="quick-chip px-3 py-1 rounded-lg bg-[#F5F4FF] hover:bg-[#EAE7FE] text-[#5E48C4] text-xs font-semibold border border-[#EAE7FE]">Reach Goal</button>
+                    <button type="button" onclick="setText('game-idea', 'Hit targets before time runs out.')" class="quick-chip px-3 py-1 rounded-lg bg-[#F5F4FF] hover:bg-[#EAE7FE] text-[#5E48C4] text-xs font-semibold border border-[#EAE7FE]">Hit Targets</button>
+                    <button type="button" onclick="setText('game-idea', 'Collect all items and escape the enemy.')" class="quick-chip px-3 py-1 rounded-lg bg-[#F5F4FF] hover:bg-[#EAE7FE] text-[#5E48C4] text-xs font-semibold border border-[#EAE7FE]">Collect & Escape</button>
+                </div>
+                <input id="game-idea" type="text" placeholder="Type your idea in one short line..." class="w-full px-3.5 py-2.5 rounded-xl border border-[#EAE7FE] bg-[#F5F4FF]/40 text-sm font-normal text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+            </div>
+        </section>
+
+
+        <!-- =============================================================== -->
+        <!-- STEP 2: ACTORS (SPRITES)                                        -->
+        <!-- =============================================================== -->
+        <section class="bg-white rounded-2xl border-2 border-[#EAE7FE] p-5 sm:p-6 shadow-2xs space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-xl bg-[#5E48C4] text-white font-bold text-sm flex items-center justify-center">2</span>
+                    <h2 class="text-base sm:text-lg font-bold text-[#1A1A1A] tracking-[-0.01em]">Actors (Sprites)</h2>
+                </div>
+
+                <!-- Actor Count Selector -->
+                <div class="flex items-center gap-2 bg-[#F5F4FF] px-3 py-2 rounded-xl border border-[#EAE7FE]">
+                    <span class="text-xs font-semibold text-[#5E48C4]">How many?</span>
+                    <div class="flex gap-1" id="actor-count-btns">
+                        <button type="button" onclick="setActorCount(1)" data-count="1" class="actor-cnt-btn w-8 h-8 rounded-lg text-xs font-bold border border-[#EAE7FE] bg-white text-[#5E48C4]">1</button>
+                        <button type="button" onclick="setActorCount(2)" data-count="2" class="actor-cnt-btn w-8 h-8 rounded-lg text-xs font-bold border border-[#5E48C4] bg-[#5E48C4] text-white">2</button>
+                        <button type="button" onclick="setActorCount(3)" data-count="3" class="actor-cnt-btn w-8 h-8 rounded-lg text-xs font-bold border border-[#EAE7FE] bg-white text-[#5E48C4]">3</button>
+                        <button type="button" onclick="setActorCount(4)" data-count="4" class="actor-cnt-btn w-8 h-8 rounded-lg text-xs font-bold border border-[#EAE7FE] bg-white text-[#5E48C4]">4</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Actor Cards Container -->
+            <div id="actors-container" class="space-y-4 pt-1"></div>
+        </section>
+
+
+        <!-- =============================================================== -->
+        <!-- STEP 3: BACKGROUND                                              -->
+        <!-- =============================================================== -->
+        <section class="bg-white rounded-2xl border-2 border-[#EAE7FE] p-5 sm:p-6 shadow-2xs space-y-4">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-xl bg-[#5E48C4] text-white font-bold text-sm flex items-center justify-center">3</span>
+                <h2 class="text-base sm:text-lg font-bold text-[#1A1A1A] tracking-[-0.01em]">Background</h2>
+            </div>
+
+            <div class="space-y-3">
+                <!-- Background Color Option -->
+                <div class="rounded-xl border border-[#EAE7FE] bg-[#F5F4FF]/60 p-3.5 space-y-2.5">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="bg-color-chk" checked onchange="toggleSubBox('bg-color-chk', 'bg-color-sub')" class="w-4 h-4 accent-[#5E48C4]">
+                        <span class="text-sm font-semibold text-[#1A1A1A]">Background Color</span>
+                    </label>
+                    <div id="bg-color-sub" class="pl-7 space-y-2">
+                        <select id="bg-color-select" onchange="toggleOtherInput('bg-color-select', 'bg-color-other')" class="w-full sm:w-64 px-3 py-2 rounded-xl border border-[#EAE7FE] bg-white text-xs sm:text-sm font-medium text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                            <option value="Black / Dark Space">Black / Dark Space</option>
+                            <option value="Sky Blue">Sky Blue</option>
+                            <option value="Forest Green">Forest Green</option>
+                            <option value="Ocean Blue">Ocean Blue</option>
+                            <option value="White">White</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input id="bg-color-other" type="text" placeholder="Type color name..." class="hidden w-full sm:w-64 px-3 py-2 rounded-xl border border-[#7B6ED4] bg-white text-xs font-medium focus:outline-none focus:border-[#5E48C4]">
+                    </div>
+                </div>
+
+                <!-- Background Image Option -->
+                <div class="rounded-xl border border-[#EAE7FE] bg-[#F5F4FF]/60 p-3.5 space-y-2.5">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="bg-image-chk" onchange="toggleSubBox('bg-image-chk', 'bg-image-sub')" class="w-4 h-4 accent-[#5E48C4]">
+                        <span class="text-sm font-semibold text-[#1A1A1A]">Background Image</span>
+                    </label>
+                    <div id="bg-image-sub" class="hidden pl-7">
+                        <input id="bg-image-name" type="text" placeholder="What picture? (e.g., space, jungle, city...)" class="w-full px-3 py-2 rounded-xl border border-[#7B6ED4] bg-white text-xs sm:text-sm font-normal focus:outline-none focus:border-[#5E48C4]">
+                    </div>
+                </div>
+
+                <!-- Add Shapes Option -->
+                <div class="rounded-xl border border-[#EAE7FE] bg-[#F5F4FF]/60 p-3.5 space-y-2.5">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="bg-shapes-chk" onchange="toggleSubBox('bg-shapes-chk', 'bg-shapes-sub')" class="w-4 h-4 accent-[#5E48C4]">
+                        <span class="text-sm font-semibold text-[#1A1A1A]">Add Shapes</span>
+                    </label>
+                    <div id="bg-shapes-sub" class="hidden pl-7 space-y-2">
+                        <div class="flex flex-wrap gap-2">
+                            <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#EAE7FE] text-xs font-semibold text-[#404048] cursor-pointer">
+                                <input type="checkbox" class="shape-type-chk accent-[#5E48C4]" value="Rectangles"> Rectangles
+                            </label>
+                            <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#EAE7FE] text-xs font-semibold text-[#404048] cursor-pointer">
+                                <input type="checkbox" class="shape-type-chk accent-[#5E48C4]" value="Circles"> Circles
+                            </label>
+                            <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#EAE7FE] text-xs font-semibold text-[#404048] cursor-pointer">
+                                <input type="checkbox" class="shape-type-chk accent-[#5E48C4]" value="Lines"> Lines
+                            </label>
+                            <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#EAE7FE] text-xs font-semibold text-[#404048] cursor-pointer">
+                                <input type="checkbox" id="shape-other-chk" onchange="toggleSubBox('shape-other-chk', 'shape-other-text')" class="accent-[#5E48C4]"> Other
+                            </label>
+                        </div>
+                        <input id="shape-other-text" type="text" placeholder="Type other shape or detail..." class="hidden w-full px-3 py-2 rounded-xl border border-[#7B6ED4] bg-white text-xs font-medium focus:outline-none focus:border-[#5E48C4]">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =============================================================== -->
+        <!-- STEP 4: SCORE, TIMER & GAME END                                 -->
+        <!-- =============================================================== -->
+        <section class="bg-white rounded-2xl border-2 border-[#EAE7FE] p-5 sm:p-6 shadow-2xs space-y-4">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-xl bg-[#5E48C4] text-white font-bold text-sm flex items-center justify-center">4</span>
+                <h2 class="text-base sm:text-lg font-bold text-[#1A1A1A] tracking-[-0.01em]">Score, Timer & Game End</h2>
+            </div>
+
+            <!-- Score Change -->
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E48C4]">How will the score change?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#EAE7FE] bg-[#F5F4FF] text-xs font-semibold text-[#1A1A1A] cursor-pointer">
+                        <input type="checkbox" id="score-inc-chk" checked onchange="toggleSubBox('score-inc-chk', 'score-inc-input')" class="accent-[#5E48C4]"> Increase (+)
+                    </label>
+                    <label class="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#EAE7FE] bg-[#F5F4FF] text-xs font-semibold text-[#1A1A1A] cursor-pointer">
+                        <input type="checkbox" id="score-dec-chk" onchange="toggleSubBox('score-dec-chk', 'score-dec-input')" class="accent-[#5E48C4]"> Decrease (-)
+                    </label>
+                    <label class="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#EAE7FE] bg-[#F5F4FF] text-xs font-semibold text-[#1A1A1A] cursor-pointer">
+                        <input type="checkbox" id="score-other-chk" onchange="toggleSubBox('score-other-chk', 'score-other-input')" class="accent-[#5E48C4]"> Other
+                    </label>
+                </div>
+                <input id="score-inc-input" type="text" placeholder="When does score increase? (e.g., +1 on touching coin)" class="w-full px-3.5 py-2 rounded-xl border border-[#EAE7FE] text-xs sm:text-sm font-normal focus:outline-none focus:border-[#5E48C4]">
+                <input id="score-dec-input" type="text" placeholder="When does score decrease? (e.g., -1 on hitting rock)" class="hidden w-full px-3.5 py-2 rounded-xl border border-[#EAE7FE] text-xs sm:text-sm font-normal focus:outline-none focus:border-[#5E48C4]">
+                <input id="score-other-input" type="text" placeholder="Type other score rule..." class="hidden w-full px-3.5 py-2 rounded-xl border border-[#7B6ED4] bg-[#F5F4FF]/40 text-xs sm:text-sm font-normal focus:outline-none focus:border-[#5E48C4]">
+            </div>
+
+            <!-- Timer -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E48C4] mb-1">Timer</label>
+                <select id="timer-choice" onchange="toggleOtherInput('timer-choice', 'timer-other')" class="w-full px-3.5 py-2.5 rounded-xl border border-[#EAE7FE] text-sm font-medium bg-white text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                    <option value="No timer">No timer</option>
+                    <option value="Countdown timer">Countdown timer</option>
+                    <option value="Count-up timer">Count-up timer</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input id="timer-other" type="text" placeholder="Type timer rule..." class="hidden mt-2 w-full px-3.5 py-2 rounded-xl border border-[#7B6ED4] bg-[#F5F4FF]/40 text-xs sm:text-sm font-normal focus:outline-none focus:border-[#5E48C4]">
+            </div>
+
+            <!-- Game End Condition -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-[0.08em] text-[#5E48C4] mb-1">How will the game end?</label>
+                <select id="game-end-select" onchange="toggleOtherInput('game-end-select', 'game-end-other')" class="w-full px-3.5 py-2.5 rounded-xl border border-[#EAE7FE] text-sm font-medium bg-white text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                    <option value="Game over when touching enemy or hazard">Game over when touching enemy or hazard</option>
+                    <option value="Game ends when timer reaches 0">Game ends when timer reaches 0</option>
+                    <option value="Win when reaching target score">Win when reaching target score</option>
+                    <option value="Game over when lives reach 0">Game over when lives reach 0</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input id="game-end-other" type="text" placeholder="Type how the game ends..." class="hidden mt-2 w-full px-3.5 py-2 rounded-xl border border-[#7B6ED4] bg-[#F5F4FF]/40 text-xs sm:text-sm font-normal focus:outline-none focus:border-[#5E48C4]">
+            </div>
+        </section>
+
+
+        <!-- =============================================================== -->
+        <!-- SUBMIT BUTTON (Alphagen Purple Primary + Yellow Spark)          -->
+        <!-- =============================================================== -->
+        <div class="flex justify-center pt-2">
+            <button type="button" onclick="generatePlan()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#5E48C4] hover:bg-[#4A3AAD] text-white font-bold text-base shadow-md hover:shadow-lg transition flex items-center justify-center gap-2.5">
+                <span class="text-[#FFD071] text-lg">✦</span>
+                <span>Create Level Checklist</span>
+            </button>
+        </div>
+
+
+        <!-- =============================================================== -->
+        <!-- GENERATED PLAN PREVIEW & DOWNLOAD SECTION                       -->
+        <!-- =============================================================== -->
+        <section id="output-section" class="hidden bg-white rounded-2xl border-2 border-[#5E48C4] shadow-md overflow-hidden">
+            <div class="bg-[#5E48C4] px-6 py-4 text-white flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl bg-[#4A3AAD] text-[#FFD071] p-2 rounded-xl font-bold">✦</span>
+                    <div>
+                        <h2 class="text-lg font-bold">Your Level Checklist is Ready</h2>
+                        <p class="text-xs text-[#EAE7FE]">Download the file — your checks auto-save every time you open it.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="downloadChecklistHTML()" class="px-5 py-2.5 rounded-xl bg-[#FFD071] hover:bg-[#E6B84A] text-[#1A1A1A] font-bold text-xs sm:text-sm shadow transition flex items-center gap-2">
+                    <span>⬇️</span>
+                    <span>Download Sheet (.html)</span>
+                </button>
+            </div>
+
+            <div id="plan-preview-body" class="p-5 sm:p-6 space-y-6"></div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 hidden bg-[#4A3AAD] text-white border border-[#FFD071] text-xs font-semibold px-4 py-3 rounded-xl shadow-lg"></div>
+
+    <script>
+        // =========================================================================
+        // 1. GLOBAL STATE, AUDIO & UI HELPERS
+        // =========================================================================
+        let currentActorCount = 0;
+        let lastGeneratedData = null;
+        let synth = null;
+
+        const actorDefaults = [
+            { name: "player", type: "Player", move: "Arrow keys", action: "Move and dodge hazards" },
+            { name: "enemy", type: "Enemy", move: "Falls from top", action: "Move across screen" },
+            { name: "coin", type: "Collectible", move: "Random position", action: "Give +1 point when touched" },
+            { name: "laser", type: "Hazard", move: "Moves side-to-side", action: "End game on touch" }
+        ];
+
+        function playChime() {
+            try {
+                if (!synth) {
+                    synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                    synth.volume.value = -14;
+                }
+                Tone.start();
+                const now = Tone.now();
+                ["C5", "E5", "G5"].forEach((note, i) => {
+                    synth.triggerAttackRelease(note, "16n", now + i * 0.08);
+                });
+            } catch (e) {}
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2600);
+        }
+
+        function setText(inputId, text) {
+            const el = document.getElementById(inputId);
+            if (el) {
+                el.value = text;
+                el.focus();
+            }
+        }
+
+        function toggleOtherInput(selectId, otherId) {
+            const sel = document.getElementById(selectId);
+            const oth = document.getElementById(otherId);
+            if (!sel || !oth) return;
+            if (sel.value === "Other") {
+                oth.classList.remove('hidden');
+                oth.focus();
+            } else {
+                oth.classList.add('hidden');
+            }
+        }
+
+        function toggleSubBox(chkId, subId) {
+            const chk = document.getElementById(chkId);
+            const sub = document.getElementById(subId);
+            if (!chk || !sub) return;
+            if (chk.checked) {
+                sub.classList.remove('hidden');
+            } else {
+                sub.classList.add('hidden');
+            }
+        }
+
+        // =========================================================================
+        // 2. DYNAMIC ACTOR (SPRITE) CARDS
+        // =========================================================================
+        function setActorCount(count) {
+            const saved = [];
+            for (let i = 0; i < currentActorCount; i++) {
+                saved.push({
+                    name: document.getElementById(`actor-name-${i}`)?.value || "",
+                    type: document.getElementById(`actor-type-${i}`)?.value || "Player",
+                    typeOther: document.getElementById(`actor-type-other-${i}`)?.value || "",
+                    move: document.getElementById(`actor-move-${i}`)?.value || "Arrow keys",
+                    moveOther: document.getElementById(`actor-move-other-${i}`)?.value || "",
+                    action: document.getElementById(`actor-action-${i}`)?.value || ""
+                });
+            }
+
+            currentActorCount = count;
+
+            document.querySelectorAll('.actor-cnt-btn').forEach(btn => {
+                const btnVal = parseInt(btn.dataset.count);
+                if (btnVal === count) {
+                    btn.className = "actor-cnt-btn w-8 h-8 rounded-lg text-xs font-bold border border-[#5E48C4] bg-[#5E48C4] text-white";
+                } else {
+                    btn.className = "actor-cnt-btn w-8 h-8 rounded-lg text-xs font-bold border border-[#EAE7FE] bg-white text-[#5E48C4] hover:bg-[#EAE7FE]";
+                }
+            });
+
+            const container = document.getElementById('actors-container');
+            container.innerHTML = "";
+
+            for (let i = 0; i < count; i++) {
+                const def = actorDefaults[i] || actorDefaults[0];
+                const prev = saved[i] || { name: "", type: def.type, typeOther: "", move: def.move, moveOther: "", action: "" };
+
+                const card = document.createElement('div');
+                card.className = "border border-[#EAE7FE] rounded-xl p-4 bg-[#F5F4FF]/70 space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-[0.08em] text-[#5E48C4] bg-[#EAE7FE] px-2.5 py-1 rounded-lg">
+                            Actor ${i + 1}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold uppercase text-[#404048] mb-1">Name</label>
+                            <input id="actor-name-${i}" type="text" value="${escapeHtml(prev.name)}" placeholder="e.g., ${def.name}" class="w-full px-3 py-2 rounded-xl border border-[#EAE7FE] bg-white text-xs sm:text-sm font-medium text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold uppercase text-[#404048] mb-1">Type of Sprite</label>
+                            <select id="actor-type-${i}" onchange="toggleOtherInput('actor-type-${i}', 'actor-type-other-${i}')" class="w-full px-3 py-2 rounded-xl border border-[#EAE7FE] bg-white text-xs sm:text-sm font-medium text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                                <option value="Player" ${prev.type === "Player" ? "selected" : ""}>Player</option>
+                                <option value="Character" ${prev.type === "Character" ? "selected" : ""}>Character</option>
+                                <option value="Enemy" ${prev.type === "Enemy" ? "selected" : ""}>Enemy</option>
+                                <option value="Hazard" ${prev.type === "Hazard" ? "selected" : ""}>Hazard</option>
+                                <option value="Collectible" ${prev.type === "Collectible" ? "selected" : ""}>Collectible</option>
+                                <option value="Other" ${prev.type === "Other" ? "selected" : ""}>Other</option>
+                            </select>
+                            <input id="actor-type-other-${i}" type="text" value="${escapeHtml(prev.typeOther)}" placeholder="Type sprite type..." class="${prev.type === 'Other' ? '' : 'hidden'} mt-1.5 w-full px-3 py-1.5 rounded-xl border border-[#7B6ED4] bg-white text-xs font-medium focus:outline-none focus:border-[#5E48C4]">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold uppercase text-[#404048] mb-1">Movement</label>
+                            <select id="actor-move-${i}" onchange="toggleOtherInput('actor-move-${i}', 'actor-move-other-${i}')" class="w-full px-3 py-2 rounded-xl border border-[#EAE7FE] bg-white text-xs sm:text-sm font-medium text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                                <option value="Arrow keys" ${prev.move === "Arrow keys" ? "selected" : ""}>Arrow keys</option>
+                                <option value="Mouse move" ${prev.move === "Mouse move" ? "selected" : ""}>Mouse move</option>
+                                <option value="Falls from top" ${prev.move === "Falls from top" ? "selected" : ""}>Falls from top</option>
+                                <option value="Moves side-to-side" ${prev.move === "Moves side-to-side" ? "selected" : ""}>Moves side-to-side</option>
+                                <option value="Random position" ${prev.move === "Random position" ? "selected" : ""}>Random position</option>
+                                <option value="Stays still" ${prev.move === "Stays still" ? "selected" : ""}>Stays still</option>
+                                <option value="Other" ${prev.move === "Other" ? "selected" : ""}>Other</option>
+                            </select>
+                            <input id="actor-move-other-${i}" type="text" value="${escapeHtml(prev.moveOther)}" placeholder="Type movement..." class="${prev.move === 'Other' ? '' : 'hidden'} mt-1.5 w-full px-3 py-1.5 rounded-xl border border-[#7B6ED4] bg-white text-xs font-medium focus:outline-none focus:border-[#5E48C4]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold uppercase text-[#404048] mb-1">What does it do?</label>
+                            <input id="actor-action-${i}" type="text" value="${escapeHtml(prev.action)}" placeholder="e.g., ${def.action}" class="w-full px-3 py-2 rounded-xl border border-[#EAE7FE] bg-white text-xs sm:text-sm font-normal text-[#1A1A1A] focus:outline-none focus:border-[#5E48C4]">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function getSelectOrOther(selectId, otherId) {
+            const sel = document.getElementById(selectId);
+            if (!sel) return "";
+            if (sel.value === "Other") {
+                return document.getElementById(otherId)?.value.trim() || "Custom";
+            }
+            return sel.value;
+        }
+
+        // =========================================================================
+        // 3. COLLECT DATA & BUILD CONCISE LEVEL-WISE ACTION CHECKLIST (NO SYNTAX)
+        // =========================================================================
+        function collectPlanData() {
+            const title = document.getElementById('game-title').value.trim() || "My Game";
+            const screenSize = getSelectOrOther('screen-size', 'screen-size-other');
+            const idea = document.getElementById('game-idea').value.trim() || "Playable arcade game";
+
+            const actors = [];
+            for (let i = 0; i < currentActorCount; i++) {
+                actors.push({
+                    num: i + 1,
+                    name: document.getElementById(`actor-name-${i}`).value.trim() || `actor_${i + 1}`,
+                    type: getSelectOrOther(`actor-type-${i}`, `actor-type-other-${i}`),
+                    move: getSelectOrOther(`actor-move-${i}`, `actor-move-other-${i}`),
+                    action: document.getElementById(`actor-action-${i}`).value.trim() || "Interact on screen"
+                });
+            }
+
+            // Background details
+            const bgParts = [];
+            if (document.getElementById('bg-color-chk').checked) {
+                bgParts.push("Color: " + getSelectOrOther('bg-color-select', 'bg-color-other'));
+            }
+            if (document.getElementById('bg-image-chk').checked) {
+                const imgName = document.getElementById('bg-image-name').value.trim();
+                bgParts.push("Image" + (imgName ? ": " + imgName : ""));
+            }
+            if (document.getElementById('bg-shapes-chk').checked) {
+                const shapes = Array.from(document.querySelectorAll('.shape-type-chk:checked')).map(c => c.value);
+                const otherShape = document.getElementById('shape-other-chk').checked
+                    ? document.getElementById('shape-other-text').value.trim()
+                    : "";
+                if (otherShape) shapes.push(otherShape);
+                bgParts.push("Shapes" + (shapes.length ? ": " + shapes.join(", ") : ""));
+            }
+            const bgSummary = bgParts.length ? bgParts.join(" | ") : "Plain background";
+
+            // Score rules
+            const scoreParts = [];
+            if (document.getElementById('score-inc-chk').checked) {
+                const incText = document.getElementById('score-inc-input').value.trim();
+                scoreParts.push("Increase" + (incText ? " (" + incText + ")" : ""));
+            }
+            if (document.getElementById('score-dec-chk').checked) {
+                const decText = document.getElementById('score-dec-input').value.trim();
+                scoreParts.push("Decrease" + (decText ? " (" + decText + ")" : ""));
+            }
+            if (document.getElementById('score-other-chk').checked) {
+                const othText = document.getElementById('score-other-input').value.trim();
+                if (othText) scoreParts.push(othText);
+            }
+            const scoreSummary = scoreParts.length ? scoreParts.join(" | ") : "Track score";
+
+            const timerSummary = getSelectOrOther('timer-choice', 'timer-other');
+            const gameEndSummary = getSelectOrOther('game-end-select', 'game-end-other');
+
+            // Level-wise action checklist (Strict: do this, do that — NO code syntax!)
+            const levels = [
+                {
+                    phase: "Level 1: Screen & Background",
+                    items: [
+                        `Set the game window size to ${screenSize}.`,
+                        ...bgParts.map(part => `Add background ${part}.`)
+                    ]
+                },
+                {
+                    phase: "Level 2: Sprites & Movement",
+                    items: actors.flatMap(a => [
+                        `Add ${a.type} sprite "${a.name}" and show it on screen.`,
+                        `Make "${a.name}" move (${a.move}).`,
+                        `Keep "${a.name}" inside screen boundaries.`
+                    ])
+                },
+                {
+                    phase: "Level 3: Actions & Rules",
+                    items: [
+                        ...actors.map(a => `Make "${a.name}" ${a.action.toLowerCase()}.`),
+                        `Show the score on screen.`,
+                        `Update score: ${scoreSummary}.`,
+                        ...(timerSummary !== "No timer" ? [`Add ${timerSummary.toLowerCase()} on screen.`] : [])
+                    ]
+                },
+                {
+                    phase: "Level 4: Game End & Test",
+                    items: [
+                        `End the game: ${gameEndSummary}.`,
+                        `Show final message on screen when game ends.`,
+                        `Play and test the whole game from start to finish.`
+                    ]
+                }
+            ];
+
+            return {
+                id: 'pgzero_plan_' + title.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '_' + Date.now(),
+                title,
+                screenSize,
+                idea,
+                actors,
+                bgSummary,
+                scoreSummary,
+                timerSummary,
+                gameEndSummary,
+                levels
+            };
+        }
+
+        function generatePlan() {
+            const data = collectPlanData();
+            lastGeneratedData = data;
+
+            const outputSec = document.getElementById('output-section');
+            const previewBody = document.getElementById('plan-preview-body');
+
+            let taskIdx = 0;
+            const checklistHtml = data.levels.map(group => `
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold uppercase tracking-[0.12em] text-[#5E48C4]">${escapeHtml(group.phase)}</h4>
+                    <div class="space-y-2">
+                        ${group.items.map(item => {
+                            const id = `prev-chk-${taskIdx++}`;
+                            return `
+                                <label for="${id}" class="flex items-start gap-3 p-3 rounded-xl border border-[#EAE7FE] bg-[#F5F4FF]/60 hover:bg-white cursor-pointer transition">
+                                    <input type="checkbox" id="${id}" class="plan-check mt-0.5 w-4 h-4 accent-[#5E48C4] rounded">
+                                    <span class="text-sm font-normal text-[#1A1A1A]">${escapeHtml(item)}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            previewBody.innerHTML = `
+                <!-- Compact Plan Summary (Purple Pale Note Box with Purple Left-Rule) -->
+                <div class="bg-[#EAE7FE]/60 border-l-4 border-[#5E48C4] rounded-xl p-4 space-y-2.5 text-xs sm:text-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#EAE7FE] pb-2">
+                        <h3 class="text-base font-bold text-[#1A1A1A]">${escapeHtml(data.title)}</h3>
+                        <span class="px-3 py-0.5 rounded-full bg-[#FFD071] text-[#1A1A1A] text-xs font-bold">${escapeHtml(data.screenSize)}</span>
+                    </div>
+                    <p class="text-[#1A1A1A]"><b>Goal:</b> ${escapeHtml(data.idea)}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs text-[#404048]">
+                        <div class="bg-white p-3 rounded-xl border border-[#EAE7FE] space-y-1">
+                            <b class="text-[#5E48C4] block">Sprites (${data.actors.length}):</b>
+                            ${data.actors.map(a => `<div>• <b class="text-[#1A1A1A]">${escapeHtml(a.name)}</b> (${escapeHtml(a.type)}) — ${escapeHtml(a.move)}</div>`).join('')}
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-[#EAE7FE] space-y-1">
+                            <div><b class="text-[#1A1A1A]">Background:</b> ${escapeHtml(data.bgSummary)}</div>
+                            <div><b class="text-[#1A1A1A]">Score:</b> ${escapeHtml(data.scoreSummary)}</div>
+                            <div><b class="text-[#1A1A1A]">Timer:</b> ${escapeHtml(data.timerSummary)}</div>
+                            <div><b class="text-[#1A1A1A]">Game End:</b> ${escapeHtml(data.gameEndSummary)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level-Wise Checklist -->
+                <div class="space-y-4">
+                    ${checklistHtml}
+                </div>
+            `;
+
+            outputSec.classList.remove('hidden');
+            playChime();
+            try { confetti({ particleCount: 70, spread: 65, colors: ['#5E48C4', '#FFD071', '#7B6ED4'], origin: { y: 0.7 } }); } catch (e) {}
+            outputSec.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // =========================================================================
+        // 4. GENERATE STANDALONE DOWNLOADABLE HTML CHECKLIST FILE
+        // =========================================================================
+        function downloadChecklistHTML() {
+            if (!lastGeneratedData) {
+                generatePlan();
+            }
+            const data = lastGeneratedData;
+            const storageKey = data.id;
+
+            let totalTasks = 0;
+            const renderedGroups = data.levels.map(group => {
+                const itemsHtml = group.items.map(item => {
+                    const chkId = `task_${totalTasks++}`;
+                    return `
+                        <label class="task-row" for="${chkId}">
+                            <input type="checkbox" id="${chkId}" onchange="saveProgress()">
+                            <span class="task-text">${escapeHtml(item)}</span>
+                        </label>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="phase-card">
+                        <h3>${escapeHtml(group.phase)}</h3>
+                        <div class="task-list">${itemsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const standaloneHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(data.title)} — Alphagen Level Checklist</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+    * { box-sizing: border-box; }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #F5F4FF;
+        color: #1A1A1A;
+        margin: 0;
+        padding: 20px 16px 60px;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    .header {
+        background: #5E48C4;
+        color: #ffffff;
+        border-radius: 16px;
+        padding: 20px 22px;
+        margin-bottom: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .eyebrow {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: #FFD071;
+        margin-bottom: 2px;
+    }
+    .header h1 { margin: 0 0 2px; font-size: 1.35rem; font-weight: 800; color: #ffffff; }
+    .header p { margin: 0; font-size: 0.8rem; color: #EAE7FE; }
+    .progress-box {
+        background: #4A3AAD;
+        padding: 10px 14px;
+        border-radius: 12px;
+        min-width: 185px;
+    }
+    .progress-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #FFD071;
+        margin-bottom: 6px;
+    }
+    .bar-bg { background: #7B6ED4; height: 9px; border-radius: 999px; overflow: hidden; }
+    .bar-fill { background: #FFD071; height: 100%; width: 0%; transition: width 0.25s ease; }
+    .plan-summary {
+        background: #EAE7FE;
+        border-left: 4px solid #5E48C4;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+    .plan-summary h2 { margin: 0 0 10px; font-size: 0.82rem; color: #5E48C4; text-transform: uppercase; letter-spacing: 0.14em; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; font-size: 0.84rem; }
+    .summary-item { background: #ffffff; padding: 10px 14px; border-radius: 12px; border: 1px solid #EAE7FE; line-height: 1.5; color: #404048; }
+    .summary-item strong { color: #1A1A1A; }
+    .phase-card {
+        background: #ffffff;
+        border: 2px solid #EAE7FE;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 14px;
+    }
+    .phase-card h3 { margin: 0 0 10px; font-size: 0.82rem; color: #5E48C4; text-transform: uppercase; letter-spacing: 0.14em; }
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        border: 1px solid #EAE7FE;
+        background: #F5F4FF;
+        cursor: pointer;
+    }
+    .task-row:hover { background: #ffffff; border-color: #7B6ED4; }
+    .task-row input[type="checkbox"] {
+        width: 19px;
+        height: 19px;
+        margin-top: 1px;
+        accent-color: #5E48C4;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .task-text { font-size: 0.92rem; font-weight: 400; line-height: 1.5; color: #1A1A1A; }
+    .task-row input:checked + .task-text {
+        text-decoration: line-through;
+        color: #888896;
+    }
+    .banner-done {
+        display: none;
+        background: #FFD071;
+        color: #1A1A1A;
+        padding: 14px;
+        border-radius: 14px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 0.98rem;
+        margin-bottom: 16px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <div class="eyebrow">Alphagen Learning ✦</div>
+            <h1>${escapeHtml(data.title)}</h1>
+            <p>Level-by-Level Game Checklist • Saves automatically</p>
+        </div>
+        <div class="progress-box">
+            <div class="progress-top">
+                <span>Progress</span>
+                <span id="prog-label">0 / ${totalTasks} Done</span>
+            </div>
+            <div class="bar-bg"><div id="prog-bar" class="bar-fill"></div></div>
+        </div>
+    </div>
+
+    <div id="done-banner" class="banner-done">✦ All Levels Complete! Great job!</div>
+
+    <div class="plan-summary">
+        <h2>Game Plan • ${escapeHtml(data.screenSize)} • ${escapeHtml(data.idea)}</h2>
+        <div class="summary-grid">
+            <div class="summary-item">
+                <strong>Sprites (${data.actors.length}):</strong><br>
+                ${data.actors.map(a => `• <b>${escapeHtml(a.name)}</b> (${escapeHtml(a.type)}) — ${escapeHtml(a.move)}`).join('<br>')}
+            </div>
+            <div class="summary-item">
+                <strong>Background:</strong> ${escapeHtml(data.bgSummary)}<br>
+                <strong>Score:</strong> ${escapeHtml(data.scoreSummary)}<br>
+                <strong>Timer:</strong> ${escapeHtml(data.timerSummary)}<br>
+                <strong>Game End:</strong> ${escapeHtml(data.gameEndSummary)}
+            </div>
+        </div>
+    </div>
+
+    ${renderedGroups}
+</div>
+
+<script>
+    const STORAGE_KEY = ${JSON.stringify(storageKey)};
+    const TOTAL = ${totalTasks};
+
+    function saveProgress() {
+        const state = {};
+        let checkedCount = 0;
+        for (let i = 0; i < TOTAL; i++) {
+            const cb = document.getElementById('task_' + i);
+            if (cb) {
+                state['task_' + i] = cb.checked;
+                if (cb.checked) checkedCount++;
+            }
+        }
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+        updateUI(checkedCount);
+    }
+
+    function updateUI(checkedCount) {
+        const pct = TOTAL > 0 ? Math.round((checkedCount / TOTAL) * 100) : 0;
+        document.getElementById('prog-label').innerText = checkedCount + ' / ' + TOTAL + ' Done';
+        document.getElementById('prog-bar').style.width = pct + '%';
+        document.getElementById('done-banner').style.display = (checkedCount === TOTAL && TOTAL > 0) ? 'block' : 'none';
+    }
+
+    function loadProgress() {
+        let checkedCount = 0;
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                const state = JSON.parse(raw);
+                for (let i = 0; i < TOTAL; i++) {
+                    const cb = document.getElementById('task_' + i);
+                    if (cb && state['task_' + i]) {
+                        cb.checked = true;
+                        checkedCount++;
+                    }
+                }
+            }
+        } catch (e) {}
+        updateUI(checkedCount);
+    }
+
+    window.onload = loadProgress;
+<\/script>
+</body>
+</html>`;
+
+            const blob = new Blob([standaloneHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const cleanFilename = (data.title.toLowerCase().replace(/[^a-z0-9]+/g, '_') || 'game_plan') + '_checklist.html';
+            a.href = url;
+            a.download = cleanFilename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast(`Downloaded "${cleanFilename}"!`);
+        }
+
+        function resetForm() {
+            document.getElementById('game-title').value = "";
+            document.getElementById('screen-size').selectedIndex = 0;
+            document.getElementById('screen-size-other').value = "";
+            document.getElementById('screen-size-other').classList.add('hidden');
+            document.getElementById('game-idea').value = "";
+
+            document.getElementById('bg-color-chk').checked = true;
+            document.getElementById('bg-color-sub').classList.remove('hidden');
+            document.getElementById('bg-color-select').selectedIndex = 0;
+            document.getElementById('bg-color-other').value = "";
+            document.getElementById('bg-color-other').classList.add('hidden');
+
+            document.getElementById('bg-image-chk').checked = false;
+            document.getElementById('bg-image-sub').classList.add('hidden');
+            document.getElementById('bg-image-name').value = "";
+
+            document.getElementById('bg-shapes-chk').checked = false;
+            document.getElementById('bg-shapes-sub').classList.add('hidden');
+            document.querySelectorAll('.shape-type-chk').forEach(c => c.checked = false);
+            document.getElementById('shape-other-chk').checked = false;
+            document.getElementById('shape-other-text').value = "";
+            document.getElementById('shape-other-text').classList.add('hidden');
+
+            document.getElementById('score-inc-chk').checked = true;
+            document.getElementById('score-inc-input').value = "";
+            document.getElementById('score-inc-input').classList.remove('hidden');
+
+            document.getElementById('score-dec-chk').checked = false;
+            document.getElementById('score-dec-input').value = "";
+            document.getElementById('score-dec-input').classList.add('hidden');
+
+            document.getElementById('score-other-chk').checked = false;
+            document.getElementById('score-other-input').value = "";
+            document.getElementById('score-other-input').classList.add('hidden');
+
+            document.getElementById('timer-choice').selectedIndex = 0;
+            document.getElementById('timer-other').value = "";
+            document.getElementById('timer-other').classList.add('hidden');
+
+            document.getElementById('game-end-select').selectedIndex = 0;
+            document.getElementById('game-end-other').value = "";
+            document.getElementById('game-end-other').classList.add('hidden');
+
+            document.getElementById('output-section').classList.add('hidden');
+            currentActorCount = 0;
+            setActorCount(2);
+            showToast("Reset complete!");
+        }
+
+        window.onload = function() {
+            setActorCount(2);
+        };
+    </script>
+</body>
+</html>
